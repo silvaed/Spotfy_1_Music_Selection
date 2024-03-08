@@ -1,46 +1,27 @@
-# World Football Data Dashboard ⚽
+# Playlist Recommendation System 🎵
 
-This is a Streamlit web application that allows you to explore football match statistics from various countries and leagues. You can filter the data based on countries, leagues, and teams, view metrics related to goals scored, and visualize the data on a map.
+## Overview
+This Streamlit web application recommends playlists based on user selections from a diverse dataset of songs. Utilizing advanced filtering and data visualization, it provides an interactive experience for exploring and discovering music recommendations.
 
 ## Features
-
-- **Data Download**: The application can download football match data from a Google Drive shareable link and display it in a tabular format.
-
-- **Data Filtering**: You can filter the data by selecting specific countries, leagues, and teams using the sidebar widgets.
-
-- **Metric Calculation**: The application calculates and displays various metrics related to goals scored in football matches, providing insights into different game events.
-
-- **Total Goals by Team**: It calculates and displays the total goals scored and conceded by each team, giving you an overview of their performance.
-
-- **Map Visualization**: The application creates an interactive map plot using Plotly Express to visualize the total goals scored by each country.
+- **Interactive Playlist Recommendations**: Users can select artists and songs to receive tailored playlist recommendations.
+- **Dynamic Filtering**: Offers real-time filtering capabilities for users to refine their music selections based on artist names and song titles.
+- **Data Visualization**: Presents recommended playlists in an easily digestible format, with clickable links for immediate listening on Spotify.
+- **User-Friendly Interface**: Designed with Streamlit, the application boasts an intuitive sidebar for filter options and a clean, responsive layout.
 
 ## How to Use
-
-1. **Run the Application**: To run the application, execute the code provided in your Streamlit environment or Python IDE.
-
-2. **Filter Data**: Use the sidebar widgets to filter the data by selecting countries, leagues, and teams of interest.
-
-3. **View Metrics**: Explore the calculated metrics related to goals scored and other game events in the DataFrame.
-
-4. **Total Goals by Team**: Check out the total goals scored and conceded by each team in the DataFrame.
-
-5. **Map Visualization**: Interact with the map plot to see the distribution of total goals scored by country.
-
-## Requirements
-
-- Python 3.x
-- Streamlit
-- Pandas
-- Plotly Express
-- Gdown
+1. **Launch the Application**: Start the application through Streamlit by running `streamlit run app.py` in your terminal, where `app.py` is the name of your Python script.
+2. **Select Filters**: Use the sidebar to filter music by artist or song. The application dynamically updates the playlist recommendations based on your selections.
+3. **Explore Recommendations**: View the recommended playlists, which include direct links to Spotify for instant access to the tracks.
 
 ## Installation
+To run this application locally, you need to install the required Python packages:
 
-1. Clone the repository to your local machine:
+1. Clone this repository to your local machine.
+2. Install the required packages listed in `requirements.txt` by running:
+3. Execute the Streamlit application: streamlit run app.py
 
-   ```bash
-   git clone <repository-url>
-
-pip install streamlit pandas plotly gdown
-
-streamlit run <filename.py>
+## Requirements
+- Streamlit
+- Pandas
+- Scikit-learn
