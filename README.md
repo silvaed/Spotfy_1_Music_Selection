@@ -24,6 +24,4 @@ To run this application locally, you need to install the required Python package
 ## Requirements
 - numpy
 - pandas
-- plotly
-- scikit_learn==1.0.2
 - streamlit

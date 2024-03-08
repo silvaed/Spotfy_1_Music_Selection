@@ -1,16 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OneHotEncoder
-import plotly.graph_objects as go
-import plotly.express as px
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
-from pandas.core.dtypes.cast import maybe_upcast
 from sklearn.metrics.pairwise import euclidean_distances
-from sklearn.decomposition import IncrementalPCA
 import streamlit as st
 
 
