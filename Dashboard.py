@@ -13,6 +13,7 @@ from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.decomposition import IncrementalPCA
 import streamlit as st
 
+'''
 first_Run  = 0 
 
 while first_Run == 0:
@@ -55,7 +56,7 @@ while first_Run == 0:
     first_Run = first_Run +1
 
 
-
+'''
 
 
 st.set_page_config(layout= 'wide')
@@ -66,7 +67,7 @@ st.markdown("<br>",unsafe_allow_html=True)
 
 
 
-#music_df = pd.read_csv("df_Machine_Learning.csv")
+music_df = pd.read_csv("df_Machine_Learning.csv")
 
 
 
@@ -111,14 +112,14 @@ def nome_da_Musica_Artista (nome_artista_Musica,df):
     musica_Selecionada_Y = musica_Selecionada_Y.iloc[0, 1]
 
     # Musica no mesmo cluster
-    musicas_recomendadas = df[ df['cluster_pca']== cluster] [[0, 1, 'artists_song','id']]
-    distancias = euclidean_distances(musicas_recomendadas[[0, 1]],[[musica_Selecionada_X,musica_Selecionada_Y]])
+    musicas_recomendadas = df[ df['cluster_pca']== cluster] [[str(0), str(1), 'artists_song','id']]
+    distancias = euclidean_distances(musicas_recomendadas[[str(0), str(1)]],[[musica_Selecionada_X,musica_Selecionada_Y]])
     musicas_recomendadas['Distancia'] = distancias
 
     musicas_recomendadas = musicas_recomendadas.sort_values('Distancia').head(11)
     musicas_recomendadas = musicas_recomendadas.reset_index(drop=True)
     musicas_recomendadas['link'] = 'https://open.spotify.com/track/'+musicas_recomendadas['id'].astype(str)
-    musicas_recomendadas = musicas_recomendadas.drop(['id','Distancia',0,1],axis=1)
+    musicas_recomendadas = musicas_recomendadas.drop(['id','Distancia',str(0),str(1)],axis=1)
     musicas_recomendadas = musicas_recomendadas[musicas_recomendadas['artists_song']!=nome_artista_Musica]
     musicas_recomendadas['link'] = musicas_recomendadas['link'].apply(make_clickable)
 
