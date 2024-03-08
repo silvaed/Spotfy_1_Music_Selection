@@ -22,6 +22,8 @@ To run this application locally, you need to install the required Python package
 3. Execute the Streamlit application: streamlit run app.py
 
 ## Requirements
-- Streamlit
-- Pandas
-- Scikit-learn
+- numpy
+- pandas
+- plotly
+- scikit_learn==1.0.2
+- streamlit
