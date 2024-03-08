@@ -13,51 +13,6 @@ from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.decomposition import IncrementalPCA
 import streamlit as st
 
-'''
-first_Run  = 0 
-
-while first_Run == 0:
-
-    dados = pd.read_csv('https://raw.githubusercontent.com/sthemonica/music-clustering/main/Dados/Dados_totais.csv')
-    dados_Alterados = dados.drop(["id","name","mode","artists_song","key","explicit"],axis=1)
-    ohe = OneHotEncoder(dtype=int)
-    colunas_ohe = ohe.fit_transform(dados_Alterados[['artists']]).toarray()
-    dados_Alterados_dummy = dados_Alterados
-    dados_Alterados_dummy = dados_Alterados_dummy.drop('artists',axis=1)
-    dados_Alterados_dummy = pd.concat([dados_Alterados_dummy, pd.DataFrame(colunas_ohe, columns=ohe.get_feature_names_out(['artists']))], axis=1)
-
-
-    SEED = 1224
-    np.random.seed(1224)
-    pca_pipeline = Pipeline([('scaler', StandardScaler()), ('PCA', PCA(n_components=0.7, random_state=SEED))])
-    music_embedding_pca = pca_pipeline.fit_transform(dados_Alterados_dummy)
-    projection = pd.DataFrame(data=music_embedding_pca)
-
-    kmeans_pca_pipeline = KMeans(n_clusters=50, verbose=False, random_state=SEED)
-
-    kmeans_pca_pipeline.fit(projection)
-
-    dados_Alterados['cluster_pca'] = kmeans_pca_pipeline.predict(projection)
-
-    dados_Alterados['artists_song'] = dados['artists_song']
-
-    dados_Alterados['id'] = dados['id']
-
-    projection['cluster_pca'] = kmeans_pca_pipeline.predict(projection)
-
-    projection['artist'] = dados['artists']
-
-    projection['artists_song'] = dados['artists_song']
-
-    projection['id'] = dados['id']
-
-    music_df = projection
-
-    first_Run = first_Run +1
-
-
-'''
-
 
 st.set_page_config(layout= 'wide')
 
@@ -110,6 +65,7 @@ def nome_da_Musica_Artista (nome_artista_Musica,df):
     musica_Selecionada_Y = df[df['artists_song']==nome_artista_Musica]
     musica_Selecionada_Y = musica_Selecionada_Y.reset_index(drop=True)
     musica_Selecionada_Y = musica_Selecionada_Y.iloc[0, 1]
+
 
     # Musica no mesmo cluster
     musicas_recomendadas = df[ df['cluster_pca']== cluster] [[str(0), str(1), 'artists_song','id']]
