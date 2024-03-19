@@ -1,133 +1,79 @@
+
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances
 import streamlit as st
 
-
-st.set_page_config(layout= 'wide')
+st.set_page_config(layout='wide')
 
 st.markdown("<h1 style='text-align: center;'>Playlist Recommendation (♪) </h1>", unsafe_allow_html=True)
-st.markdown("<br>",unsafe_allow_html=True)
-st.markdown("<br>",unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
-
-
+# Load the dataset
 music_df = pd.read_csv("df_Machine_Learning.csv")
 
-
-
-
-###########################################################################################################
-    
-
-
-# Filtering Dataframe using the filters selection 
-
+# Splitting the 'artists_song' column into 'artist' and 'song'
 artists_songs = music_df['artists_song'].str.split('-')
 artist = []
 song = []
 
-filter_DF = False
-
 for list_ in artists_songs:
-
     a = str(list_[0]).strip()
     s = str(list_[1]).strip()
 
     artist.append(a)
     song.append(s)
 
-def nome_da_Musica_Artista (nome_artista_Musica,df):
-
+def recommend_song_artist(song_artist_name, df):
     def make_clickable(link):
         # HTML anchor tag to render the hyperlink
         return f'<a target="_blank" href="{link}">Link</a>'
 
+    cluster = list(df[df['artists_song'] == song_artist_name]['cluster_pca'])[0]
 
-    cluster = list(df[df['artists_song']== nome_artista_Musica]['cluster_pca'])[0]
+    # X and Y values OR columns 1 and 2 of the selected song
+    selected_song_X = df[df['artists_song'] == song_artist_name].reset_index(drop=True).iloc[0, 0]
+    selected_song_Y = df[df['artists_song'] == song_artist_name].reset_index(drop=True).iloc[0, 1]
 
-    ### Valor da coluna 1 e 2 OR X e Y da musica escolhida
-    musica_Selecionada_X = df[df['artists_song']==nome_artista_Musica]
-    musica_Selecionada_X = musica_Selecionada_X.reset_index(drop=True)
-    musica_Selecionada_X = musica_Selecionada_X.iloc[0, 0]
+    # Songs in the same cluster
+    recommended_songs = df[df['cluster_pca'] == cluster][[str(0), str(1), 'artists_song', 'id']]
+    distances = euclidean_distances(recommended_songs[[str(0), str(1)]], [[selected_song_X, selected_song_Y]])
+    recommended_songs['Distance'] = distances
 
+    recommended_songs = recommended_songs.sort_values('Distance').head(11).reset_index(drop=True)
+    recommended_songs['link'] = 'https://open.spotify.com/track/' + recommended_songs['id'].astype(str)
+    recommended_songs = recommended_songs.drop(['id', 'Distance', str(0), str(1)], axis=1)
+    recommended_songs = recommended_songs[recommended_songs['artists_song'] != song_artist_name]
+    recommended_songs['link'] = recommended_songs['link'].apply(make_clickable)
 
-    musica_Selecionada_Y = df[df['artists_song']==nome_artista_Musica]
-    musica_Selecionada_Y = musica_Selecionada_Y.reset_index(drop=True)
-    musica_Selecionada_Y = musica_Selecionada_Y.iloc[0, 1]
+    return recommended_songs
 
+with st.sidebar:
+    st.title('Filters')
+    user_input = st.text_input("Type to filter Artists:")
 
-    # Musica no mesmo cluster
-    musicas_recomendadas = df[ df['cluster_pca']== cluster] [[str(0), str(1), 'artists_song','id']]
-    distancias = euclidean_distances(musicas_recomendadas[[str(0), str(1)]],[[musica_Selecionada_X,musica_Selecionada_Y]])
-    musicas_recomendadas['Distancia'] = distancias
+    # Filtering options based on user input
+    filtered_options = [option for option in set(artist) if user_input.lower() in option.lower()]
 
-    musicas_recomendadas = musicas_recomendadas.sort_values('Distancia').head(11)
-    musicas_recomendadas = musicas_recomendadas.reset_index(drop=True)
-    musicas_recomendadas['link'] = 'https://open.spotify.com/track/'+musicas_recomendadas['id'].astype(str)
-    musicas_recomendadas = musicas_recomendadas.drop(['id','Distancia',str(0),str(1)],axis=1)
-    musicas_recomendadas = musicas_recomendadas[musicas_recomendadas['artists_song']!=nome_artista_Musica]
-    musicas_recomendadas['link'] = musicas_recomendadas['link'].apply(make_clickable)
+    if filtered_options:
+        selected_option = st.selectbox("Choose an option:", filtered_options)
+        st.write(f"You selected: {selected_option}")
 
+        filtered_df = music_df[music_df['artist'] == selected_option]
+        unique_songs = sorted(filtered_df['artists_song'].unique())
 
-    return musicas_recomendadas
-
-
-
-with st.sidebar.title('Filtros'):
-
-    with st.sidebar.expander('Artist'):
-        conjunto = set(artist)
-        # Convertendo o conjunto de volta para uma lista
-        artist_Unique = list(conjunto)
-        #art_List = st.multiselect('Select a Country', artist_Unique, artist_Unique)
-
-        # User text input for filtering
-        user_input = st.text_input("Type to filter Artists:")
-
-        # Filter options based on user input
-        filtered_options = [option for option in artist_Unique if user_input.lower() in option.lower()]
-
-        # Display a selectbox with filtered options
-        if filtered_options:
-            selected_option = st.selectbox("Choose an option:", filtered_options)
-            st.write(f"You selected: {selected_option}")
-
-            filtered_df = music_df[music_df['artist'] == selected_option]
-            unique_songs = sorted(filtered_df['artists_song'].unique())
-
-            if unique_songs:  # Check if the list is not empty
-                selected_song = st.selectbox("Select a song:", unique_songs)
-                st.write(f"You selected the song: {selected_song}")
-
-                # Directly filter and update the DataFrame based on the selected song
-                
-
-                # Assuming 'playlist_DF' is now the filtered DataFrame you want to display
-                # Display the updated DataFrame
-                
-            else:
-                st.write("No songs found.")
-
-                
-
-                           
+        if unique_songs:  # Check if the list is not empty
+            selected_song = st.selectbox("Select a song:", unique_songs)
+            st.write(f"You selected the song: {selected_song}")
         else:
-            st.write("No songs found for the selected artist.")
-                
+            st.write("No songs found.")
+    else:
+        st.write("No songs found for the selected artist.")
 
+# Generate and display the playlist DataFrame
+playlist_DF = recommend_song_artist(selected_song, music_df)
+playlist_DF_html = playlist_DF.to_html(escape=False, index=False)
+playlist_DF_styled = f"<style>thead th {{text-align: center;}}</style>{playlist_DF_html}"
 
-       
-        
-    
-
-
-playlist_DF = nome_da_Musica_Artista(selected_song, music_df)    
-playlist_DF = playlist_DF.to_html(escape=False, index=False)
-playlist_DF = f"<style>thead th {{text-align: center;}}</style>{playlist_DF}"
-
-st.markdown(playlist_DF, unsafe_allow_html=True)
-    
-
-  
-    
+st.markdown(playlist_DF_styled, unsafe_allow_html=True)
